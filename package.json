@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "import-data": "node import.js"
+    "import-data": "node import.js",
+    "sync-search": "node sync.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "description": "",
   "dependencies": {
     "express": "^5.2.1",
+    "meilisearch": "^0.58.0",
     "mysql2": "^3.22.3"
   },
   "devDependencies": {
