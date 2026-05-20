@@ -1,5 +1,6 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
+import { Meilisearch } from 'meilisearch';
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,12 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+const searchClient = new Meilisearch({
+  host: 'http://search:7700',
+  apiKey: 'masterKey123!',
+});
+const movieIndex = searchClient.index('movies');
+
 app.get('/search', async (req, res) => {
   const { q } = req.query;
 
@@ -21,36 +28,32 @@ app.get('/search', async (req, res) => {
     return res.status(400).json({ error: 'O parâmetro de busca "q" é obrigatório.' });
   }
 
-  console.log(`[Busca] Iniciando pesquisa por: "${q}"`);
+  console.log(`[Busca Otimizada] Pesquisando no Meilisearch por: "${q}"`);
   
   const startTime = process.hrtime();
 
   try {
-    const querySql = `
-      SELECT tconst, title, year, genres 
-      FROM movies 
-      WHERE title LIKE ? 
-      LIMIT 20
-    `;
-    
-    const [rows] = await pool.query(querySql, [`%${q}%`]);
+    const searchResponse = await movieIndex.search(q, {
+      limit: 20
+    });
 
     const endTime = process.hrtime(startTime);
-    
+
     const durationInMs = (endTime[0] * 1000 + endTime[1] / 1e6).toFixed(2);
 
-    console.log(`[Busca] Concluída em ${durationInMs}ms. Itens encontrados: ${rows.length}`);
+    console.log(`[Busca Otimizada] Concluída em ${durationInMs}ms. Itens encontrados: ${searchResponse.hits.length}`);
 
     return res.json({
       performance: {
         took_ms: parseFloat(durationInMs),
-        records_returned: rows.length
+        records_returned: searchResponse.hits.length,
+        total_estimated_results: searchResponse.estimatedTotalHits
       },
-      results: rows
+      results: searchResponse.hits
     });
 
   } catch (error) {
-    console.error('Erro ao realizar busca:', error);
+    console.error('Erro ao realizar busca no Meilisearch:', error);
     return res.status(500).json({ error: 'Erro interno no servidor.' });
   }
 });
