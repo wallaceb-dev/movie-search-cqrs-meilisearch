@@ -1,0 +1,30 @@
+{
+  "name": "movie-search-cqrs-meilisearch",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "import-data": "node import.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wallaceb-dev/movie-search-cqrs-meilisearch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wallaceb-dev/movie-search-cqrs-meilisearch/issues"
+  },
+  "homepage": "https://github.com/wallaceb-dev/movie-search-cqrs-meilisearch#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.22.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
