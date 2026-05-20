@@ -16,6 +16,18 @@ services:
       timeout: 5s
       retries: 5
 
+  search:
+    image: getmeili/meilisearch:v1.7
+    container_name: filmes_search
+    restart: always
+    environment:
+      - MEILI_MASTER_KEY=masterKey123!
+      - MEILI_ENV=development
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili_data:/meili_data
+
   app:
     image: node:20-alpine
     container_name: filmes_app
@@ -31,3 +43,4 @@ services:
 
 volumes:
   mysql_data:
+  meili_data:
