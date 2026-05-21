@@ -9,7 +9,7 @@ const pool = mysql.createPool({
   host: 'db',
   user: 'root',
   password: 'root',
-  database: 'catalogo_filmes',
+  database: 'movies_catalog',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -25,10 +25,10 @@ app.get('/search', async (req, res) => {
   const { q } = req.query;
 
   if (!q) {
-    return res.status(400).json({ error: 'O parâmetro de busca "q" é obrigatório.' });
+    return res.status(400).json({ error: 'The search parameter "q" is required.' });
   }
 
-  console.log(`[Busca Otimizada] Pesquisando no Meilisearch por: "${q}"`);
+  console.log(`[Optimized Search] Searching in Meilisearch for: "${q}"`);
   
   const startTime = process.hrtime();
 
@@ -41,7 +41,7 @@ app.get('/search', async (req, res) => {
 
     const durationInMs = (endTime[0] * 1000 + endTime[1] / 1e6).toFixed(2);
 
-    console.log(`[Busca Otimizada] Concluída em ${durationInMs}ms. Itens encontrados: ${searchResponse.hits.length}`);
+    console.log(`[Optimized Search] Completed in ${durationInMs}ms. Items found: ${searchResponse.hits.length}`);
 
     return res.json({
       performance: {
@@ -53,11 +53,11 @@ app.get('/search', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erro ao realizar busca no Meilisearch:', error);
-    return res.status(500).json({ error: 'Erro interno no servidor.' });
+    console.error('Error performing search in Meilisearch:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
   }
 });
 
 app.listen(port, () => {
-  console.log(` Server rodando em http://localhost:${port}`);
+  console.log(` Server running at http://localhost:${port}`);
 });

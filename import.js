@@ -6,12 +6,12 @@ const dbConfig = {
   host: 'db',
   user: 'root',
   password: 'root',
-  database: 'catalogo_filmes',
+  database: 'movies_catalog',
 };
 
 async function run() {
   const connection = await mysql.createConnection(dbConfig);
-  console.log(' Conectado ao MySQL. Criando tabela se não existir...');
+  console.log(' Connected to MySQL. Creating table if it does not exist...');
 
   await connection.execute(`
     CREATE TABLE IF NOT EXISTS movies (
@@ -23,7 +23,7 @@ async function run() {
     );
   `);
 
-  console.log(' Começando a leitura do arquivo TSV...');
+  console.log(' Starting to read the TSV file...');
 
   const fileStream = fs.createReadStream('data/title.basics.tsv');
   const rl = readline.createInterface({
@@ -54,7 +54,7 @@ async function run() {
     if (batch.length >= BATCH_SIZE) {
       await insertBatch(connection, batch);
       totalInserted += batch.length;
-      console.log(` Linhas processadas e salvas: ${totalInserted}`);
+      console.log(` Processed and saved rows: ${totalInserted}`);
       batch = [];
     }
   }
@@ -64,7 +64,7 @@ async function run() {
     totalInserted += batch.length;
   }
 
-  console.log(`\n Carga finalizada com sucesso! Total de ${totalInserted} títulos importados.`);
+  console.log(`\n Import finished successfully! Total of ${totalInserted} titles imported.`);
   await connection.end();
 }
 
@@ -73,7 +73,7 @@ async function insertBatch(connection, batchData) {
   try {
     await connection.query(sql, [batchData]);
   } catch (error) {
-    console.error('Erro ao inserir lote:', error);
+    console.error('Error inserting batch:', error);
   }
 }
 

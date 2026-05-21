@@ -1,11 +1,11 @@
 services:
   db:
     image: mysql:8.0
-    container_name: filmes_mysql
+    container_name: movies_mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: catalogo_filmes
+      MYSQL_DATABASE: movies_catalog
     ports:
       - "3306:3306"
     volumes:
@@ -18,7 +18,7 @@ services:
 
   search:
     image: getmeili/meilisearch:v1.7
-    container_name: filmes_search
+    container_name: movies_search
     restart: always
     environment:
       - MEILI_MASTER_KEY=masterKey123!
@@ -30,7 +30,7 @@ services:
 
   app:
     image: node:20-alpine
-    container_name: filmes_app
+    container_name: movies_app
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app

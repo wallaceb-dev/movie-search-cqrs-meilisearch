@@ -5,7 +5,7 @@ const dbConfig = {
   host: 'db',
   user: 'root',
   password: 'root',
-  database: 'catalogo_filmes',
+  database: 'movies_catalog',
 };
 
 const searchClient = new Meilisearch({
@@ -15,12 +15,12 @@ const searchClient = new Meilisearch({
 
 async function run() {
   const connection = await mysql.createConnection(dbConfig);
-  console.log(' Conectado ao MySQL.');
+  console.log(' Connected to MySQL.');
 
   const index = searchClient.index('movies');
-  console.log(' Conectado ao Meilisearch.');
+  console.log(' Connected to Meilisearch.');
 
-  console.log(' Configurando pesos de busca...');
+  console.log(' Configuring search weights...');
   await index.updateSearchableAttributes(['title', 'genres']);
   await index.updateRankingRules([
     'words',
@@ -35,7 +35,7 @@ async function run() {
   const LIMIT = 10000;
   let totalSynced = 0;
 
-  console.log(' Iniciando migração dos dados para o Meilisearch...');
+  console.log(' Starting data migration to Meilisearch...');
 
   while (true) {
     const [rows] = await connection.query(
@@ -58,12 +58,12 @@ async function run() {
     await index.addDocuments(documents);
 
     totalSynced += rows.length;
-    console.log(` Sincronizados: ${totalSynced} filmes...`);
+    console.log(` Synced: ${totalSynced} movies...`);
 
     offset += LIMIT;
   }
 
-  console.log(`\n Sincronização concluída! ${totalSynced} documentos enviados para a fila do Meilisearch.`);
+  console.log(`\n Synchronization completed! ${totalSynced} documents sent to the Meilisearch queue.`);
   await connection.end();
 }
 
